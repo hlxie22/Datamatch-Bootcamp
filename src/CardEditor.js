@@ -1,31 +1,23 @@
 import React from 'react';
-import './CardEditor.css';
+
+import { Link } from 'react-router-dom';
+
 class CardEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = { front: '', back: '' };
   }
-
   addCard = () => {
-    let front = this.state.front.trim();
-    let back = this.state.back.trim();
-
-    if (front != '' && back != '') {
-        this.props.addCard(this.state);
+    if (!this.state.front.trim() || !this.state.back.trim()) {
+      alert('Cannot add empty card');
+      return;
     }
-
-    else {
-        alert('Cannot add empty card');
-    }
-
+    this.props.addCard(this.state);
     this.setState({ front: '', back: '' });
   };
-
   deleteCard = index => this.props.deleteCard(index);
-
   handleChange = event =>
     this.setState({ [event.target.name]: event.target.value });
-
   render() {
     const cards = this.props.cards.map((card, index) => {
       return (
@@ -33,7 +25,12 @@ class CardEditor extends React.Component {
           <td>{card.front}</td>
           <td>{card.back}</td>
           <td>
-            <button onClick={() => this.deleteCard(index)}>Delete card</button>
+            <button
+              disabled={this.props.cards.length === 1}
+              onClick={() => this.deleteCard(index)}
+            >
+              Delete card
+            </button>
           </td>
         </tr>
       );
@@ -66,7 +63,7 @@ class CardEditor extends React.Component {
         />
         <button onClick={this.addCard}>Add card</button>
         <hr />
-        <button onClick={this.props.switchMode}>Go to card viewer</button>
+        <Link to="/viewer">Go to card viewer</Link>
       </div>
     );
   }

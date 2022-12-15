@@ -1,6 +1,9 @@
 import React from 'react';
 import CardEditor from './CardEditor';
 import CardViewer from './CardViewer';
+import Homepage from './Homepage';
+
+import { Routes, Route } from 'react-router-dom';
 
 class App extends React.Component {
   constructor(props) {
@@ -10,7 +13,6 @@ class App extends React.Component {
         { front: 'front1', back: 'back1' },
         { front: 'front2', back: 'back2' },
       ],
-      editor: true,
     };
   }
 
@@ -18,28 +20,30 @@ class App extends React.Component {
     const cards = this.state.cards.slice().concat(card);
     this.setState({ cards });
   };
-
   deleteCard = index => {
     const cards = this.state.cards.slice();
     cards.splice(index, 1);
     this.setState({ cards });
   };
 
-  switchMode = () => this.setState({ editor: !this.state.editor });
-
   render() {
-    if (this.state.editor) {
-      return (
-        <CardEditor
-          addCard={this.addCard}
-          cards={this.state.cards}
-          deleteCard={this.deleteCard}
-          switchMode={this.switchMode}
-        />
-      );
-    } else {
-      return <CardViewer switchMode={this.switchMode} />;
-    }
+    const cardEditor = <CardEditor
+    addCard={this.addCard}
+    cards={this.state.cards}
+    deleteCard={this.deleteCard}
+  />
+
+    const cardViewer = <CardViewer cards={this.state.cards} />   
+    
+    
+
+    return (
+      <Routes>
+        <Route exact path="/editor" element={cardEditor} />
+        <Route exact path="/viewer" element={cardViewer}/>
+        <Route exact path="/" element={<Homepage />}/>
+      </Routes>
+    );
   }
 }
 
